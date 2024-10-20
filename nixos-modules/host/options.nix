@@ -37,7 +37,7 @@
         ''${pkgs.iproute2}/bin/ip link set "$id" master br0 up
       '';
       type = types.lines;
-      default = "${pkgs.iproute2}/bin/ip link set "$id" up";
+      default = "${pkgs.iproute2}/bin/ip link set \"$id\" up";
       defaultText = "''${pkgs.iproute2}/bin/ip link set \"$id\" up";
     };
 
