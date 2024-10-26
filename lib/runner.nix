@@ -6,6 +6,8 @@
 let
   inherit (pkgs) lib;
 
+  inherit (microvmConfig) virtiofsdScripts;
+
   inherit (import ./. { inherit lib; }) createVolumesScript makeMacvtap;
   inherit (makeMacvtap {
     inherit microvmConfig hypervisorConfig;
@@ -65,6 +67,16 @@ pkgs.buildPackages.runCommand "microvm-${microvmConfig.hypervisor}-${microvmConf
     else ""}
   ${lib.optionalString ((hypervisorConfig.setBalloonScript or null) != null) ''
     ln -s ${balloonScriptBin}/bin/microvm-balloon $out/bin/microvm-balloon
+  ''}
+
+  ${lib.optionalString (virtiofsdScripts.run != null) ''
+    ln -s ${lib.getExe virtiofsdScripts.run} $out/bin/virtiofsd-run
+  ''}
+  ${lib.optionalString (virtiofsdScripts.reload != null) ''
+    ln -s ${lib.getExe virtiofsdScripts.reload} $out/bin/virtiofsd-reload
+  ''}
+  ${lib.optionalString (virtiofsdScripts.shutdown != null) ''
+    ln -s ${lib.getExe virtiofsdScripts.shutdown} $out/bin/virtiofsd-shutdown
   ''}
 
   mkdir -p $out/share/microvm
