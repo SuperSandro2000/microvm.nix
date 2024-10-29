@@ -354,5 +354,23 @@ in
 
     # Enable Kernel Same-Page Merging
     hardware.ksm.enable = lib.mkDefault true;
+
+    # TODO: remove in 2026
+    system.activationScripts.microvm-virtiofsd-check = ''
+      if [ -d ${stateDir} ]; then
+        _microvms_with_virtiofsd=""
+
+        for dir in ${stateDir}/*; do
+          if [ -e $dir/current/share/microvm/virtiofs ] &&
+             [ ! -e $dir/bin/virtiofsd-run ]; then
+            _microvms_with_virtiofsd="$_microvms_with_virtiofsd $(basename $dir)"
+          fi
+        done
+
+        if [ "$_microvms_with_virtiofsd" != "" ]; then
+          echo "The following MicroVMs must be updated to follow the new virtiofsd scheme: $_microvms_with_virtiofsd"
+        fi
+      fi
+    '';
   };
 }
