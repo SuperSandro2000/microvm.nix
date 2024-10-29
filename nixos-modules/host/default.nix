@@ -265,7 +265,7 @@ in
           before = [ "microvm@%i.service" ];
           after = [ "local-fs.target" ];
           partOf = [ "microvm@%i.service" ];
-          unitConfig.ConditionPathExists = "${stateDir}/%i/current/bin/run-virtiofsd";
+          unitConfig.ConditionPathExists = "${stateDir}/%i/current/bin/virtiofsd-run";
           restartIfChanged = false;
           serviceConfig = {
             WorkingDirectory = "${stateDir}/%i";
