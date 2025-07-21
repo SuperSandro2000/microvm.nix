@@ -7,7 +7,7 @@
 
 
         <!-- Custom HTML head -->
-        <script defer data-domain="astro.github.io" src="https://p.spaceboyz.net/js/script.js"></script>
+        <script defer data-domain="microvm-nix.github.io" src="https://p.spaceboyz.net/js/script.js"></script>
 
         <meta name="description" content="">
         <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -130,7 +130,7 @@
                         <a href="print.html" title="Print this book" aria-label="Print this book">
                             <i id="print-button" class="fa fa-print"></i>
                         </a>
-                        <a href="https://github.com/astro/microvm.nix" title="Git repository" aria-label="Git repository">
+                        <a href="https://github.com/microvm-nix/microvm.nix" title="Git repository" aria-label="Git repository">
                             <i id="git-repository-button" class="fa fa-github"></i>
                         </a>
 
@@ -190,13 +190,13 @@ here</a>.</p>
   inputs = {
     nixpkgs.url = "github:nixos/nixpkgs/nixos-unstable";
     microvm = {
-      url = "github:astro/microvm.nix";
+      url = "github:microvm-nix/microvm.nix";
       inputs.nixpkgs.follows = "nixpkgs";
     };
   };
 
   outputs = { self, nixpkgs, microvm }: {
-    emulated-dev = nixpkgs.lib.nixosSystem {
+    nixosConfigurations.emulated-dev = nixpkgs.lib.nixosSystem {
       # host system
       system = "x86_64-linux";
       modules = let
@@ -207,9 +207,9 @@ here</a>.</p>
           crossSystem.config = guestSystem;
         };
       in [
-        {nixpkgs.crossSystem.config = guestSystem;}
         microvm.nixosModules.microvm
         {
+          nixpkgs.crossSystem.config = guestSystem;
           microvm = {
             # you can choose what CPU will be emulated by qemu
             cpu = "cortex-a53";
@@ -224,7 +224,7 @@ here</a>.</p>
   };
 }
 </code></pre>
-<p>You can run the example with <code>nix run .#emulated-dev.config.microvm.declaredRunner</code>.</p>
+<p>You can run the example with <code>nix run .#nixosConfigurations.emulated-dev.config.microvm.declaredRunner</code>.</p>
 <p>As shown in this example, you can use system packages on the guest
 system by using nixpkgs with a proper <code>crossSystem</code> configuration.</p>
 
